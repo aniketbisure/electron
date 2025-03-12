@@ -29,52 +29,76 @@ function App() {
     }
   }
 
-  const renderNumberGrid = () => {
+  function BlockGrid() {
+    // Generate rows of data
+    const generateRows = () => {
+      const rows = []
+      for (let i = 0; i < 10; i++) {
+        const startNum = 1000 + i * 10
+        rows.push({
+          rowStart: startNum,
+          cells: Array.from({ length: 10 }, (_, index) => startNum + index),
+        })
+      }
+      return rows
+    }
+
+    const rows = generateRows()
+
     return (
-      <div className="number-grid">
-        <div className="grid-header">
-          <div className="grid-header-cell block-cell">Block</div>
-          <div className="grid-header-cell">0000</div>
-          <div className="grid-header-cell">0001</div>
-          <div className="grid-header-cell">0002</div>
-          <div className="grid-header-cell">0003</div>
-          <div className="grid-header-cell">0004</div>
-          <div className="grid-header-cell">0005</div>
-          <div className="grid-header-cell">0006</div>
-          <div className="grid-header-cell">0007</div>
-          <div className="grid-header-cell">0008</div>
-          <div className="grid-header-cell">0009</div>
-          <div className="grid-header-cell qty-cell">Qty.</div>
-          <div className="grid-header-cell pts-cell">Pts.</div>
-        </div>
-        {[...Array(10)].map((_, rowIndex) => (
-          <div key={rowIndex} className="grid-row">
-            <div className="grid-cell block-cell">{String(rowIndex * 10).padStart(4, '0')}</div>
-            {[...Array(10)].map((_, colIndex) => (
-              <div key={colIndex} className="grid-cell number-input-cell">
-                <input type="text" maxLength={1} />
+      <div className="w-full max-w-7xl mx-auto p-4 overflow-x-auto">
+        <div className="min-w-[1000px]">
+          {/* Header row */}
+          <div className="grid grid-cols-[80px_repeat(10,1fr)_80px_80px] gap-1 mb-1">
+            <div className="bg-white border border-gray-300 p-2 font-bold text-center">Block</div>
+            {Array.from({ length: 10 }, (_, i) => (
+              <div key={i} className="bg-blue-400 border border-gray-300 p-2 text-center font-bold">
+                {1000 + i}
               </div>
             ))}
-            <div className="grid-cell qty-cell"></div>
-            <div className="grid-cell pts-cell"></div>
+            <div className="bg-white border border-gray-300 p-2 font-bold text-center">Qty.</div>
+            <div className="bg-white border border-gray-300 p-2 font-bold text-center">Pts.</div>
           </div>
-        ))}
+
+          {/* Data rows */}
+          {rows.map((row, rowIndex) => (
+            <div key={rowIndex} className="grid grid-cols-[80px_repeat(10,1fr)_80px_80px] gap-1 mb-1">
+              <div className="bg-blue-400 border border-gray-300"></div>
+              {row.cells.map((cellNum, cellIndex) => (
+                <div key={cellIndex} className="border border-gray-300">
+                  <div className="text-center text-sm font-semibold mb-1">{cellNum}</div>
+                  <input
+                    type="text"
+                    className="w-full border-0 bg-white p-1 focus:outline-none text-center"
+                    aria-label={`Input for block ${cellNum}`}
+                  />
+                </div>
+              ))}
+              <div className="bg-emerald-500 border border-gray-300"></div>
+              <div className="bg-yellow-500 border border-gray-300"></div>
+            </div>
+          ))}
+        </div>
       </div>
-    );
+    )
+  }
+
+  const renderNumberGrid = () => {
+    return <BlockGrid />;
   };
 
   const renderLuckyPlusTable = () => {
     const pointsData = [
-      { range: "0000-0099", points: "(Pts 2 * 1 )", total: "", color: "range-0000-0099" },
-      { range: "0100-0199", points: "(Pts 2)", total: "2.00", color: "range-0100-0199" },
-      { range: "0200-0299", points: "(Pts 2)", total: "4.00", color: "range-0200-0299" },
-      { range: "0300-0399", points: "(Pts 2)", total: "10.00", color: "range-0300-0399" },
-      { range: "0400-0499", points: "(Pts 2)", total: "20.00", color: "range-0400-0499" },
-      { range: "0500-0599", points: "(Pts 2)", total: "40.00", color: "range-0500-0599" },
-      { range: "0600-0699", points: "(Pts 2)", total: "", color: "range-0600-0699" },
-      { range: "0700-0799", points: "(Pts 2)", total: "", color: "range-0700-0799" },
-      { range: "0800-0899", points: "(Pts 2)", total: "", color: "range-0800-0899" },
-      { range: "0900-0999", points: "(Pts 2)", total: "", color: "range-0900-0999" }
+      { range: "0000-0099", points: "(Pts 2 * 1 )", total: "180", color: "range-0000-0099" },
+      { range: "0100-0199", points: "(Pts 2 * 1)", total: "180", color: "range-0100-0199" },
+      { range: "0200-0299", points: "(Pts 2 * 2)", total: "360", color: "range-0200-0299" },
+      { range: "0300-0399", points: "(Pts 2 * 3)", total: "540", color: "range-0300-0399" },
+      { range: "0400-0499", points: "(Pts 2 * 5)", total: "900", color: "range-0400-0499" },
+      { range: "0500-0599", points: "(Pts 2 * 5)", total: "900", color: "range-0500-0599" },
+      { range: "0600-0699", points: "(Pts 2 * 10)", total: "1800", color: "range-0600-0699" },
+      { range: "0700-0799", points: "(Pts 2 * 20)", total: "3600", color: "range-0700-0799" },
+      { range: "0800-0899", points: "(Pts 2 * 25)", total: "4500", color: "range-0800-0899" },
+      { range: "0900-0999", points: "(Pts 2 * 25)", total: "4500", color: "range-0900-0999" }
     ];
 
     return (
@@ -89,7 +113,7 @@ function App() {
             </div>
               {pointsData.map((item, index) => (
                 <div key={index} className="points-row">
-                  <div className="range-box">
+                  <div className={`range-box ${selectedRange === item.range ? 'selected' : ''}`} onClick={() => setSelectedRange(item.range)}>
                     {item.range}
                   </div>
                   <div className={`points-box ${item.color}`}>
