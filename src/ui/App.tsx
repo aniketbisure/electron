@@ -6,6 +6,8 @@ function App() {
   const [selectedRange, setSelectedRange] = useState<string>("1000-1999")
   const [selectedOption, setSelectedOption] = useState<string>("All")
   const [currentPage, setCurrentPage] = useState<number>(0)
+  const [showLuckyPlus, setShowLuckyPlus] = useState<boolean>(true)
+  const [selectedRanges, setSelectedRanges] = useState<string[]>([])
   
   // Mock statistics data that would come from Electron
   const [stats, setStats] = useState<any>(null)
@@ -28,51 +30,172 @@ function App() {
   }
 
   const renderNumberGrid = () => {
-    const startNum = 1000 + (currentPage * 100)
-    const rows = []
-    
-    for (let i = 0; i < 10; i++) {
-      const rowStart = startNum + (i * 10)
-      const cells = []
-      
-      for (let j = 0; j < 10; j++) {
-        const num = rowStart + j
-        cells.push(
-          <td 
-            key={num} 
-            className={`number-cell ${selectedNumbers.includes(num) ? 'selected' : ''}`}
-            onClick={() => handleNumberSelect(num)}
-          >
-            {num}
-          </td>
-        )
-      }
-      
-      rows.push(<tr key={i}>{cells}</tr>)
-    }
-    
-    return rows
-  }
+    return (
+      <div className="number-grid">
+        <div className="grid-header">
+          <div className="grid-header-cell block-cell">Block</div>
+          <div className="grid-header-cell">0000</div>
+          <div className="grid-header-cell">0001</div>
+          <div className="grid-header-cell">0002</div>
+          <div className="grid-header-cell">0003</div>
+          <div className="grid-header-cell">0004</div>
+          <div className="grid-header-cell">0005</div>
+          <div className="grid-header-cell">0006</div>
+          <div className="grid-header-cell">0007</div>
+          <div className="grid-header-cell">0008</div>
+          <div className="grid-header-cell">0009</div>
+          <div className="grid-header-cell qty-cell">Qty.</div>
+          <div className="grid-header-cell pts-cell">Pts.</div>
+        </div>
+        {[...Array(10)].map((_, rowIndex) => (
+          <div key={rowIndex} className="grid-row">
+            <div className="grid-cell block-cell">{String(rowIndex * 10).padStart(4, '0')}</div>
+            {[...Array(10)].map((_, colIndex) => (
+              <div key={colIndex} className="grid-cell number-input-cell">
+                <input type="text" maxLength={1} />
+              </div>
+            ))}
+            <div className="grid-cell qty-cell"></div>
+            <div className="grid-cell pts-cell"></div>
+          </div>
+        ))}
+      </div>
+    );
+  };
+
+  const renderLuckyPlusTable = () => {
+    const pointsData = [
+      { range: "0000-0099", points: "(Pts 2 * 1 )", total: "", color: "range-0000-0099" },
+      { range: "0100-0199", points: "(Pts 2)", total: "2.00", color: "range-0100-0199" },
+      { range: "0200-0299", points: "(Pts 2)", total: "4.00", color: "range-0200-0299" },
+      { range: "0300-0399", points: "(Pts 2)", total: "10.00", color: "range-0300-0399" },
+      { range: "0400-0499", points: "(Pts 2)", total: "20.00", color: "range-0400-0499" },
+      { range: "0500-0599", points: "(Pts 2)", total: "40.00", color: "range-0500-0599" },
+      { range: "0600-0699", points: "(Pts 2)", total: "", color: "range-0600-0699" },
+      { range: "0700-0799", points: "(Pts 2)", total: "", color: "range-0700-0799" },
+      { range: "0800-0899", points: "(Pts 2)", total: "", color: "range-0800-0899" },
+      { range: "0900-0999", points: "(Pts 2)", total: "", color: "range-0900-0999" }
+    ];
+
+    return (
+      <div className="lucky-plus-layout">
+        <div className="lucky-plus-content">
+          <div className="points-table-section">
+            <div className="points-table">
+            <div className="page-controls">
+              <button>Page Up</button>
+              <button>Page Down</button>
+              <label><input type="checkbox" /> All</label>
+            </div>
+              {pointsData.map((item, index) => (
+                <div key={index} className="points-row">
+                  <div className="range-box">
+                    {item.range}
+                  </div>
+                  <div className={`points-box ${item.color}`}>
+                    <input type="checkbox" />
+                    <span>{item.points}</span>
+                  </div>
+                  <div className="total-box">{item.total}</div>
+                </div>
+              ))}
+            </div>
+          </div>
+          <div className="number-grid-section">
+            <div className="number-grid">
+              <div className="grid-header">
+                <div className="grid-header-cell block-cell">Block</div>
+                <div className="grid-header-cell">0000</div>
+                <div className="grid-header-cell">0001</div>
+                <div className="grid-header-cell">0002</div>
+                <div className="grid-header-cell">0003</div>
+                <div className="grid-header-cell">0004</div>
+                <div className="grid-header-cell">0005</div>
+                <div className="grid-header-cell">0006</div>
+                <div className="grid-header-cell">0007</div>
+                <div className="grid-header-cell">0008</div>
+                <div className="grid-header-cell">0009</div>
+                <div className="grid-header-cell qty-cell">Qty.</div>
+                <div className="grid-header-cell pts-cell">Pts.</div>
+              </div>
+              {[...Array(10)].map((_, rowIndex) => (
+                <div key={rowIndex} className="grid-row">
+                  <div className="grid-cell block-cell">{String(rowIndex * 10).padStart(4, '0')}</div>
+                  {[...Array(10)].map((_, colIndex) => (
+                    <div key={colIndex} className="grid-cell number-input-cell">
+                      <input type="text" maxLength={1} />
+                    </div>
+                  ))}
+                  <div className="grid-cell qty-cell"></div>
+                  <div className="grid-cell pts-cell"></div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  };
 
   return (
+    <>
     <div className="lottery-app">
       {/* Header */}
       <div className="header">
-        <div className="time-display">
-          <span>Dr. Time:</span>
-          <span>05:00 PM</span>
-        </div>
         <div className="number-display">
-          <div className="number-box pink">1037</div>
-          <div className="number-box light-orange">1144</div>
-          <div className="number-box green">1291</div>
-          <div className="number-box purple">1329</div>
-          <div className="number-box red">1423</div>
-          <div className="number-box gold">1556</div>
-          <div className="number-box teal">1612</div>
-          <div className="number-box magenta">1711</div>
-          <div className="number-box lime">1881</div>
-          <div className="number-box salmon">1979</div>
+          <div className="dr-time-container">
+            <span className="dr-time-text">Dr. Time:<br/></span>05:00 PM</div>
+          </div>
+          <div className="number-box pink">1144
+          <div>
+            <span>1000</span>
+            </div>
+          </div>
+          <div className="number-box light-orange">1144
+          <div>
+            <span>1000</span>
+            </div>
+          </div>
+          <div className="number-box green">1291
+          <div>
+            <span>1000</span>
+            </div>
+          </div>
+          <div className="number-box purple">1329
+          <div>
+            <span>1000</span>
+            </div>
+          </div>
+          <div className="number-box red">1423
+          <div>
+            <span>1000</span>
+            </div>
+          </div>
+          <div className="number-box gold">1556
+          <div>
+            <span>1000</span>
+            </div>
+          </div>
+          <div className="number-box teal">1612
+          <div>
+            <span>1000</span>
+            </div>
+          </div>
+          <div className="number-box magenta">1711
+          <div>
+            <span>1000</span>
+            </div>
+          </div>
+          <div className="number-box lime">1881
+          <div>
+            <span>1000</span>
+            </div>
+          </div>
+          <div className="number-box salmon">1979
+          <div>
+            <span>1000</span>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -89,28 +212,37 @@ function App() {
       </div>
 
       {/* Draw Time Info */}
-      <div className="draw-info">
-        <div className="time-to-draw">
-          <span>Time To Draw:</span>
-          <span className="highlight">14:55</span>
-          <span>Draw Time</span>
-          <span>05:15 PM</span>
-          <span>Draw Date</span>
-          <span>25-01-2025</span>
-        </div>
-        <div className="limit-info">
-          <div className="limit-box">
-            <div className="limit-label">Limit Update</div>
-            <div className="limit-value">******</div>
-          </div>
-          <div className="transaction-box">
-            <div className="transaction-label">Last Transaction No.:</div>
-            <div className="transaction-value">L.S. Pts:</div>
-          </div>
-        </div>
+      <div className="header-container">
+      <div className="time-section">
+        <div className="label">Time to Draw:</div>
+        <div className="value draw-time-value">14.55</div>
       </div>
+      <div className="time-section">
+        <div className="label">Draw Time</div>
+        <div className="value draw-value">14.55</div>
+      </div>
+      <div className="time-section">
+        <div className="label">Draw Date</div>
+        <div className="value draw-value">11-03-2025</div>
+      </div>
+      <div className="limit-section">
+        <button className="limit-button">Limit Update</button>
+        <div className="limit-value">************</div>
+      </div>
+      <div className="transaction-section">
+        <div className="label">Last Transaction No:</div>
+        <div className="value">lekiybi03n</div>
+      </div>
+      <div className="points-section">
+        <div className="label">L.S Pts:</div>
+        <div className="value">20</div>
+      </div>
+    </div>
 
-      <div className="welcome-banner">Welcome</div>
+      <div className="welcome-banner">
+        <div className="welcome-message">Welcome</div>
+        <div className="dynamic-message">No messages available</div>
+      </div>
 
       {/* Number Range Selection */}
       <div className="range-selection">
@@ -179,7 +311,12 @@ function App() {
       {/* Game Options */}
       <div className="game-options">
         <div className="lucky-plus">
-          <button className="lucky-button">Lucky Plus (F2)</button>
+          <button 
+            className="lucky-button" 
+            onClick={() => setShowLuckyPlus(!showLuckyPlus)}
+          >
+            Lucky Plus (F2)
+          </button>
           <button className="new-lucky-button">New Lucky Plus (F3)</button>
         </div>
         <button className="multi-number-button">Multi Number</button>
@@ -224,64 +361,7 @@ function App() {
         </div>
       </div>
 
-      {/* Page Navigation */}
-      <div className="page-navigation">
-        <button 
-          className="page-button"
-          onClick={() => setCurrentPage(Math.max(0, currentPage - 1))}
-        >
-          Page Up
-        </button>
-        <button 
-          className="page-button"
-          onClick={() => setCurrentPage(Math.min(9, currentPage + 1))}
-        >
-          Page Down
-        </button>
-        <label className="checkbox-container">
-          <input type="checkbox" name="all" />
-          <span>All</span>
-        </label>
-        <button className="block-button">Block</button>
-      </div>
-
-      {/* Main Number Grid */}
-      <div className="main-content">
-        <div className="points-section">
-          {["1000 - 1099", "1100 - 1199", "1200 - 1299", "1300 - 1399", "1400 - 1499", 
-            "1500 - 1599", "1600 - 1699", "1700 - 1799", "1800 - 1899", "1900 - 1999"].map((range, index) => (
-            <div key={index} className={`points-row ${index === currentPage ? 'active' : ''}`}>
-              <span className="range">{range}</span>
-              <span className="points">(Pts 2)</span>
-            </div>
-          ))}
-        </div>
-        
-        <div className="number-grid-container">
-          <table className="number-grid">
-            <thead>
-              <tr>
-                <th className="grid-header">Block</th>
-                <th>1000</th>
-                <th>1001</th>
-                <th>1002</th>
-                <th>1003</th>
-                <th>1004</th>
-                <th>1005</th>
-                <th>1006</th>
-                <th>1007</th>
-                <th>1008</th>
-                <th>1009</th>
-                <th>Qty.</th>
-                <th>Pts.</th>
-              </tr>
-            </thead>
-            <tbody>
-              {renderNumberGrid()}
-            </tbody>
-          </table>
-        </div>
-      </div>
+      {renderLuckyPlusTable()}
 
       {/* Footer */}
       <div className="footer">
@@ -294,7 +374,7 @@ function App() {
           <button className="single-digit-button">SingleDigit</button>
         </div>
       </div>
-    </div>
+    </>
   )
 }
 
